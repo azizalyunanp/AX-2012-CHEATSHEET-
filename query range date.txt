@@ -1,0 +1,11 @@
+TransDate startDate, EndDate; // Declare variables
+
+startDate = mkDate(1,9,2017);
+
+endtDate = mkDate(1,10,2017);
+
+queryBuildRange.value(queryRange(StartDate, EndDate));
+
+(or)
+
+queryBuildRange.value(queryRange(mkDate(1,9,2017), mkDate(1,10,2017)));

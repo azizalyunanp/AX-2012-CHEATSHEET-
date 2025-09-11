@@ -1,0 +1,49 @@
+// X++, Main method in a class.
+static public void Main(Args _args)
+{
+    LoginProperty loginProperty;
+    OdbcConnection odbcConnection;
+    Statement statement;
+    ResultSet resultSet;
+    str sql, criteria;
+    SqlStatementExecutePermission perm;
+    ;
+
+    // Set the information on the ODBC.
+    loginProperty = new LoginProperty();
+    loginProperty.setDSN("ExternalDB_32bit");
+    loginProperty.setDatabase("ExternalDatabaseName");
+
+    //Create a connection to external database.
+    odbcConnection = new OdbcConnection(loginProperty);
+
+    if (odbcConnection)
+    {
+        sql = "SELECT * FROM items;";
+
+        //Assert permission for executing the sql string.
+        perm = new SqlStatementExecutePermission(sql);
+        perm.assert();
+
+        //Prepare the sql statement.
+        statement = odbcConnection.createStatement();
+        resultSet = statement.executeQuery(sql);
+
+        //Cause the sql statement to run,
+        //then loop through each row in the result.
+        while (resultSet.next())
+        {
+            //It is not possible to get field 3 and then 1.
+            //Always get fields in numerical order, such as 1 then 2 the 3 etc.
+            print strFmt("%1 - %2", strRTrim(resultSet.getString(1)), strRTrim(resultSet.getString(2)));
+        }
+
+        //Close the connection.
+        resultSet.close();
+        statement.close();
+    }
+    else
+    {
+        error("Failed to log on to the database through ODBC.");
+    }
+}

@@ -1,0 +1,7 @@
+Dialog dialog = new Dialog("Dialog example");
+DialogText t1 = dialog.addText(strFmt("Text to show"));
+DialogText t2 = dialog.addText(strfmt("SecondText to show"));
+FormStaticTextControl c1 = t1.control();
+c1.widthMode(FormWidth::ColumnWidth);
+c1.alignment(FormAlignment::Center);
+dialog.run();

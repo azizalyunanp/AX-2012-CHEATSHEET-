@@ -1,0 +1,22 @@
+ProdTable prodTable = prodTable::find("BO-2101-000017") ;
+    ProdParmStatusDecrease prodParmStatusDecrease ;
+    ProdMultiStatusDecrease   prodMultiStatusDecrease = prodMultiStatusDecrease::construct(new args());
+    select firstOnly ProdParmStatusDecrease where
+            prodParmStatusDecrease.ProdId == prodTable.ProdId
+            && prodParmStatusDecrease.JobStatus == ParmJobStatus::Executed ;
+
+    if(!prodParmStatusDecrease)
+    {
+        prodParmStatusDecrease.initFromProdTable(prodTable);
+        prodParmStatusDecrease.WantedStatus = ProdStatus::Created;
+        prodParmStatusDecrease.ParmId = NumberSeq::newGetNum(CompanyInfo::numRefParmId()).num();
+        prodParmStatusDecrease.insert();
+
+          
+
+        prodMultiStatusDecrease.initParmBuffer(prodParmStatusDecrease);
+
+        prodMultiStatusDecrease.parmId(prodParmStatusDecrease.ParmId);
+
+        prodMultiStatusDecrease.run();
+    }

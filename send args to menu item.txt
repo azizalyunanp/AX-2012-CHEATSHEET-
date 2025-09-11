@@ -1,0 +1,9 @@
+  //super();
+Args            args;
+    ;
+
+args = new Args();
+args.caller(element);
+args.parm(ItemGroupId.text());
+    
+new MenuFunction(menuitemDisplayStr(STX_SNCodeMaster), MenuItemType::Display).run(args);

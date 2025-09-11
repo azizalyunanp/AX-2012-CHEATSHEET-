@@ -1,0 +1,25 @@
+fieldWarehouse.registerOverrideMethod(methodstr(FormStringControl, lookup),
+                          methodstr(STX_CountInventTableProcess, lookupSubstore),
+                         this);
+
+
+
+private void lookupSubstore(FormReferenceControl _ctrl)
+{
+    SysTableLookup  tableLookup = SysTableLookup::newParameters(tableNum(InventLocation), _ctrl);
+    Query query = new Query();
+    QueryBuildDataSource qbds = query.addDataSource(tableNum(InventLocation));
+    
+    qbds.addRange(fieldNum(InventLocation,InventSiteId)).value(fieldSite.value());
+    qbds.addRange(fieldNum(InventLocation,MK_SubStore)).value(SysQuery::value(NoYes::Yes)) ; 
+    
+    
+    // Here you would have some ranges    
+
+    tableLookup.parmQuery(query);
+    tableLookup.addLookupfield(fieldNum(InventLocation, InventSiteId));
+    tableLookup.addLookupfield(fieldNum(InventLocation, InventLocationId));
+    tableLookup.addLookupfield(fieldNum(InventLocation, Name));
+
+      tableLookup.performFormLookup();
+}

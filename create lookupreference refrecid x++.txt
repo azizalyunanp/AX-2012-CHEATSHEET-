@@ -1,0 +1,18 @@
+public Common lookupReference(FormReferenceControl _formReferenceControl)
+{
+    Common ret;
+    Query query = new Query();
+    QueryBuildDataSource qbds;
+    SysReferenceTableLookup sysTableLookup;
+    ;
+
+    sysTableLookup = SysReferenceTableLookup::newParameters(tableNum(STX_LCApplicantMaster), _formReferenceControl);
+    qbds = query.addDataSource(tableNum(STX_LCApplicantMaster));
+
+    sysTableLookup.addLookupfield(fieldNum(STX_LCApplicantMaster, STX_LCApplicantId));
+    sysTableLookup.addLookupfield(fieldNum(STX_LCApplicantMaster, Name));
+
+    sysTableLookup.parmQuery(query);
+
+    return sysTableLookup.performFormLookup();
+}

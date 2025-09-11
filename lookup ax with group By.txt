@@ -1,0 +1,17 @@
+ Query query = new Query();
+    QueryBuildDataSource qbds;
+    SysTableLookup sysTableLookup;
+ 
+    super();
+ 
+    sysTableLookup = sysTableLookup::newParameters(tableNum(InventSerial),this);
+    sysTableLookup.addLookupfield(fieldNum(InventSerial,InventSerialId));
+ 
+    qbds = query.addDataSource(tableNum(InventSerial));
+    qbds.addSortField(fieldnum(InventSerial,InventSerialId));
+ 
+    qbds.orderMode(OrderMode::GroupBy);
+ 
+ 
+    sysTableLookup.parmQuery(query);
+    sysTableLookup.performFormLookup();

@@ -1,0 +1,14 @@
+Dialog  dialog;
+    DialogField field;
+ 
+    
+ 
+    dialog = new Dialog("Import Invent Journal Table");
+    field = dialog.addField(extendedTypeStr(InventJournalId));
+ 
+    dialog.run();
+ 
+    if (dialog.closedOk())
+    {
+ 
+    }

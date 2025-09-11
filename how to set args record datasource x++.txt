@@ -1,0 +1,11 @@
+PurchTable purchTable;
+PurchTable argPurchTable;
+
+select firstOnly purchTable;
+args.record(purchTable);
+
+if (args.record() && args.dataset() == tableNum(PurchTable))
+{
+    argPurchTable = args.record();
+    //do something
+}

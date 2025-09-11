@@ -1,0 +1,12 @@
+public void refreshDataSource(Args _args)
+{
+    FormDataSource dataSource;
+    #Task
+    
+    if (_args && _args.dataset() && _args.record().isFormDataSource())
+        dataSource = _args.record().dataSource();
+
+    if (dataSource.formRun())
+        dataSource.formRun().task(#taskF5);
+
+}

@@ -1,0 +1,13 @@
+static void Job1(Args _args)
+{
+    str paramAsStr = "Wert1@@Wert2@@Wert3";
+    container paramAsCon;
+    int i;
+
+    paramAsCon = str2con(paramAsStr, "@@");
+    
+    for (i=1;i<=conLen(paramAsCon);i++)
+    {
+        info(conPeek(paramAsCon, i));    
+    }
+}

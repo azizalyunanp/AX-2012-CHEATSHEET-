@@ -1,0 +1,35 @@
+Query   query = new Query();
+    QueryBuildDataSource    qbds,qbds2;
+    MultiSelectionHelper    helper;
+    Common                  common;
+    Query                   QQ;
+    QueryBuildRange         qbr,qbr2;
+    Container               conValue;
+    STX_ReadyToEnded               STX_ReadyToEnded ;
+    FormDataSource          STX_ReadyToEnded_ds ;
+    FormRun                 caller ;
+
+    ;
+     qbds = query.addDataSource(tableNum(STX_ReadyToEnded));
+     qbds.clearRanges() ;
+
+    if (args && args.record())
+    {
+        STX_ReadyToEnded = args.record() ;
+        STX_ReadyToEnded_ds = STX_ReadyToEnded.dataSource() ;
+
+        caller = args.caller();
+        helper = MultiSelectionHelper::createFromCaller(caller);
+
+        helper.createQueryRanges(qbds,fieldStr(STX_ReadyToEnded,RecId));
+    }
+
+    else
+    {
+        qbds = query.dataSourceTable(tableNum(STX_ReadyToEnded));
+        qbds.clearRanges();
+        qbr = qbds.addRange(fieldNum(STX_ReadyToEnded,RecId)) ;
+ 
+    }
+
+    queryRun = new QueryRun(query);

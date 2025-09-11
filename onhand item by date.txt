@@ -1,0 +1,13 @@
+InventDimParm inventDimParm;
+InventDim inventDimCriteria;
+InventSumDateDim inventSumDateDim;
+ItemId itemId = "1003”;
+;
+
+// Set the dimensions
+inventDimCriteria.InventColorId = "02”;
+inventDimParm.initFromInventDim(inventDimCriteria);
+inventSumDateDim = inventSumDateDim::newParameters(mkdate(05,06,2007),itemId, inventDimCriteria, inventDimParm);
+info(strfmt(‘Posted Quantity is %1’,inventSumDateDim.postedQty()));
+info(strfmt("Received Quantity is %1”,inventSumDateDim.receivedQty()));
+info(strfmt(‘Deducted Quantity is %1’,inventSumDateDim.deductedQty()));

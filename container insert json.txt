@@ -1,0 +1,61 @@
+public str getItemTax()
+{
+    #define.RetryNum(6)
+    str Ret ;
+    MK_CreateJson  MK_CreateJson;
+    InventTable inventTable;
+    container conpackdata;
+    int i ;
+    try
+    {
+        ttsBegin;
+        while select inventTable
+        {
+            i++;
+            MK_CreateJson =  MK_CreateJson::construct();
+            MK_CreateJson.StartWritejson();
+            mk_CreateJson.CreateData("ItemId",inventTable.ItemId);
+            mk_CreateJson.CreateData("dat",curext());
+            MK_CreateJson.endWritejson();
+            ConPackData       = conIns(ConPackData, i,  MK_CreateJson.resultData());
+        }
+
+        Ret =  @'{"data": ['+ con2Str(ConPackData) + ']}';
+        ttsCommit;
+        return Ret;
+    }
+
+    catch (Exception::UpdateConflict)
+    {
+         ttsAbort;
+        if (appl.ttsLevel() == 0)
+        {
+            if (xSession::currentRetryCount() >= #RetryNum)
+            {
+                throw Exception::UpdateConflictNotRecovered;
+            }
+            else
+            {
+                retry;
+            }
+        }
+        else
+        {
+            throw Exception::UpdateConflict;
+        }
+    }
+    catch(Exception::CLRError)
+    {
+         ttsAbort;
+        error(AifUtil::getClrErrorMessage());
+
+
+    }
+    catch
+    {
+         ttsAbort;
+        error(AifUtil::getClrErrorMessage());
+
+    }
+
+}

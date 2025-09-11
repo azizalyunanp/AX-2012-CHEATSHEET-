@@ -1,0 +1,16 @@
+ 
+
+In first run following query in master database
+
+exec sp_who
+If you can't find the culprit, try
+
+SELECT request_session_id FROM sys.dm_tran_locks 
+WHERE resource_database_id = DB_ID('YourDatabase')
+Then kill all process that use your database with following query:
+
+KILL spid
+Then run following query:
+
+USE Master
+ALTER DATABASE YourDatabase SET MULTI_USER

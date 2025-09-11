@@ -1,0 +1,14 @@
+ Month Start Date : 
+
+TransDate dateInMonth=today();  
+ TransDate firstDateOfMonth;  
+ ;  
+ firstDateOfMonth = DateStartMth(dateInMonth); 
+
+month end date
+
+TransDate dateInMonth=today();  
+ TransDate endDateOfMonth;  
+ ;  
+ endDateOfMonth= endmth(dateInMonth);
+

@@ -1,0 +1,86 @@
+using System;
+using System.Threading.Tasks;
+using System.Web.Http;
+using AxaptaApiApp.Utils;
+using System.Web.Http.Description;
+using AxaptaApiApp.STX_BarcodeBalePoServiceGroup;
+using System.Runtime.Serialization;
+using System.Collections.Generic;
+
+namespace AxaptaApiApp.Controllers
+{
+    public class BarcodeBalePoController : ApiController
+    {
+        private CallContext context = ClientFactory.CreateContext<CallContext>();
+
+        // Add the _contract parameter
+        [HttpPost]
+        [Route("barcode")]
+        [ResponseType(typeof(STX_BarcodeBalePoServiceInsertBarcodeBalePOSynchResponse))]
+        public async Task<IHttpActionResult> InsertBarcode([FromBody] BarcodeBalePoContract contract)
+        {
+            try
+            {
+                // Check if contract is null
+                if (contract == null)
+                {
+                    return BadRequest("Contract data is required.");
+                }
+
+                using (var client = ClientFactory.CreateClient<STX_BarcodeBalePoServiceClient>())
+                {
+                    // Pass the contract and context
+                    var request = await client.insertBarcodeBalePOSynchAsync(context, MapContractToServiceContract(contract));
+
+                    return Ok(request.response); // Return the response
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // Map your custom contract to the service's contract
+        private STX_BarcodeBalePoContract MapContractToServiceContract(BarcodeBalePoContract contract)
+        {
+            return new STX_BarcodeBalePoContract
+            {
+                ParmBarcode = contract.Barcode,
+                ParmItemId = contract.ItemId,
+                ParmQtyBale = contract.QtyBale,
+                ParmQtyKg = contract.QtyKg,
+                ParmBarcodeRecId = contract.BarcodeRecId
+            };
+        }
+    }
+
+    // Ensure DataContract and DataMember are properly set for serialization
+    [DataContract]
+    public class BarcodeBalePoContract
+    {
+        [DataMember]
+        public string Barcode { get; set; }
+
+        [DataMember]
+        public string ItemId { get; set; }
+
+        [DataMember]
+        public string QtyBale { get; set; }
+
+        [DataMember]
+        public string QtyKg { get; set; }
+
+        [DataMember]
+        public string BarcodeRecId { get; set; }
+
+        public BarcodeBalePoContract(string barcode, string itemId, string qtyBale, string qtyKg, string barcodeRecId)
+        {
+            Barcode = barcode;
+            ItemId = itemId;
+            QtyBale = qtyBale;
+            QtyKg = qtyKg;
+            BarcodeRecId = barcodeRecId;
+        }
+    }
+}

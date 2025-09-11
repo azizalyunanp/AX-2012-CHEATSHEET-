@@ -1,0 +1,36 @@
+private str strSplit(str _splitString,str _splitchar,int _pos)
+{
+    List strlist=new List(Types::String);
+    ListIterator    iterator;
+    container       packedList;
+    ;
+    strlist=strSplit(_splitString,_splitchar);
+    iterator = new ListIterator(strlist);
+    while(iterator.more())
+    {
+        packedList += iterator.value();
+        iterator.next();
+    }
+    return conPeek(packedList,_pos);
+}
+
+To call you can use like following
+
+
+str strvalue="Test|Test2|Test3|Test4";
+info(createProduct.strSplit(strvalue,"|",2));
+
+
+static void Job1(Args _args)
+{
+    str paramAsStr = "Wert1@@Wert2@@Wert3";
+    container paramAsCon;
+    int i;
+
+    paramAsCon = str2con(paramAsStr, "@@");
+    
+    for (i=1;i<=conLen(paramAsCon);i++)
+    {
+        info(conPeek(paramAsCon, i));    
+    }
+}

@@ -1,0 +1,49 @@
+button clicked :   
+void clicked()
+{
+    Args args = new Args();
+    FormRun        formRun;
+    InventJournalTable inventJournaltable;
+    inventjournaltrans inventjournaltrans;
+ 
+    super();
+ 
+ 
+ 
+    args.record(inventjournaltrans);
+ 
+ 
+    args.name(formstr(STX_ImportJournalTable));
+ 
+    formRun        = ClassFactory.formRunClass(args);
+ 
+    formRun.init();
+    formRun.run();
+    formRun.wait();
+}
+ 
+form init :
+ 
+public void init()
+{
+    Query                 query;
+    QueryBuildRange       qbr;
+    Sa_Products           sa_Products;
+    str                   parmid;
+    ;
+    super();
+    sa_Products           = element.args().record();
+    parmid                = element.args().parm();
+    query                 = new Query();
+    qbr                   = query.addDataSource(tablenum(Sa_ProductDetails)).addRange(fieldnum(Sa_ProductDetails,Product_Id));
+qbr.value(parmid);
+Sa_ProductDetails_ds.query(query);
+
+
+}
+ 
+refresh data  : 
+ 
+ 
+formDataSource.research(true);
+element.close();

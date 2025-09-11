@@ -1,0 +1,25 @@
+Set fieldset = new set(types::Integer);
+
+// create dictindex from unique index
+
+DictIndex dictIndex = new dictIndex (tablenum(PurchTable), indexnum(PurchTable,PurchIdx));
+
+;
+
+// these are fields from index
+
+// add them to set
+
+fieldset.add(fieldnum(PurchTable ,OrderAccount));
+
+ReleaseUpdateDB::indexAllowDup(dictIndex);
+
+// set allow duplicates
+
+ReleaseUpdateDB::deleteDuplicatesUsingIds(tablenum(PurchTable),0,fieldset);
+
+//reenable duplicates
+
+ReleaseUpdateDB::indexAllowDup(dictIndex);
+
+info("Deletion done");

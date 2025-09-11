@@ -1,0 +1,15 @@
+static void getCompanyImage(Args _args)
+{
+bindata bin = new bindata();
+str content;
+container image;
+;
+ 
+image = FormLetter::companyLogo();
+bin.setData(image);
+// Create the base64 encoded string
+content=bin.base64Encode();
+// Save it to the file system as a jpg format
+AifUtil::saveBase64ToFile(@"C:\test.jpg", content);
+info(strFmt("Done!"));
+}

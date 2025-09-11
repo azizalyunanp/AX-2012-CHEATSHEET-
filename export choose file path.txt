@@ -1,0 +1,105 @@
+public void run()
+{
+    InventTrans inventTrans ;
+    InventItemGroupItem InventItemGroupItem ;
+    InventDim inventDim ;
+    STX_SetupItemGroupCountingInv STX_SetupItemGroupCountingInv;
+    str         filePath,fileNameOnly;
+    str         type;
+    int         CekPatch;
+    FilenameSave        FilenameSave;
+    FileIoPermission permission;
+    TextIo  file;
+    container line , dataLines;
+
+    STX_CountInventTableProcess STX_CountInventTableProcess ;
+
+    CommaTextIo io;
+    str     strfilename = 'ExportCountInv.csv';
+    str     filename    = strFmt(@'C:\ExportCountInv\%1', strfilename);
+
+
+    int                                 i, totalProgress;
+
+    dialog = new Dialog("Export Counting Inventory to CSV");
+    DlgTableFileSave = dialog.addFieldValue(extendedTypeStr(FilenameSave),'');
+    fieldTransDate  = dialog.addField(extendedTypeStr(TransDate)) ;
+    fieldSite       = dialog.addField(extendedTypeStr(InventSiteId));
+    fieldWarehouse  = dialog.addField(extendedTypeStr(InventLocationId));
+
+    fieldWarehouse.registerOverrideMethod(methodstr(FormStringControl, lookup),
+                          methodstr(STX_ExportCountInventoryToCSV, lookupSubstore),
+                         this);
+
+    fieldTransDate.mandatory_RU(true);
+    fieldSite.mandatory_RU(true);
+    fieldWarehouse.mandatory_RU(true) ;
+    dialog.filenameLookupFilter(['csv','*.csv']);
+
+
+
+
+    dialog.run();
+    
+    FilenameSave = DlgTableFileSave.value() ;
+    
+    [filePath, fileNameOnly, type] = fileNameSplit(FilenameSave);
+    CekPatch= strLen(filePath);
+
+    if (dialog.closedOk())
+    {
+        if (filePath == '')
+        {
+            error("Please set up the location for export file.");
+            return;
+        }
+
+        if (!WinApi::pathExists(filePath))
+        {
+            error(strfmt("folder :%1 : does not exist, please create new folder or use existing folder",filePath));
+            return;
+        }
+        #define.filename(FilenameSave)
+        #File
+        permission = new FileIoPermission(FilenameSave, #io_write);
+        permission.assert();
+        file = new TextIo(#filename , #io_write,65001);
+        file.outFieldDelimiter(';');
+        if( !file || file.status() != IO_Status::Ok)
+        {
+            throw error("File Cannot be opened");
+        }
+        
+        
+        // Csv header
+        line = ['TransDate','ItemId','QtyActual','Site','Warehouse'] ; 
+        file.writeExp(line);
+        line = conNull();
+
+        while select InventTrans group by InventTrans.ItemId
+            where inventTrans.DatePhysical <= fieldTransDate.value() 
+            exists join inventDim
+                where inventDim.inventDimId == inventTrans.inventDimId
+                    && inventDim.InventSiteId       == fieldSite.value()
+                    && inventDim.InventLocationId   == fieldWarehouse.value()
+                    exists join STX_SetupItemGroupCountingInv
+                        where STX_SetupItemGroupCountingInv.InventSiteId == inventDim.InventSiteId
+                            && STX_SetupItemGroupCountingInv.InventSiteId == fieldSite.value()
+                    exists join InventItemGroupItem
+                        where InventItemGroupItem.ItemId == inventTrans.ItemId
+                            && InventItemGroupItem.ItemDataAreaId == curext()
+                            && InventItemGroupItem.itemGroupId == STX_SetupItemGroupCountingInv.ItemGroupId
+
+        {
+            dataLines = [Date2StrDMY(endmth(fieldTransDate.value())),inventTrans.ItemId,0,fieldSite.value(),fieldWarehouse.value() ];
+            file.writeExp(dataLines);
+            dataLines = conNull();
+            i++;
+
+
+        }
+
+        CodeAccessPermission::revertAssert();
+        info(strFmt('File exported successfully. Please find it at %1',FilenameSave));
+    }
+}

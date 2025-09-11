@@ -1,0 +1,4 @@
+if (LedgerJournalTrans.AccountType == LedgerJournalACType::Cust)
+{
+custAccount = DimensionStorage::ledgerDimension2AccountNum(LedgerJournalTrans.LedgerDimension);
+}

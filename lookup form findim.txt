@@ -1,0 +1,27 @@
+Query query = new Query();
+    QueryBuildDataSource        queryBuildDataSource;
+    QueryBuildRange             qbrForAccount;
+    SysTableLookup              sysTableLookup;
+    DimensionAttribute          dimensionAttribute;
+    DimensionAttributeDirCategory       dimAttributeDirCategory;
+    ;
+
+    super();
+
+    dimensionAttribute = DimensionAttribute::findByName("ExpenseType");
+
+    select firstonly DirCategory from dimAttributeDirCategory where dimAttributeDirCategory.DimensionAttribute == dimensionAttribute.RecId;
+
+    sysTableLookup = SysTableLookup::newParameters(tableNum(DimensionFinancialTag), this,true);
+
+    sysTableLookup.addLookupfield(fieldNum(DimensionFinancialTag, Value));
+
+    sysTableLookup.addLookupfield(fieldNum(DimensionFinancialTag, Description));
+
+    query = new Query();
+
+    query.addDataSource(tableNum(DimensionFinancialTag)).addRange(fieldNum(DimensionFinancialTag,FinancialTagCategory)).value(queryValue(dimAttributeDirCategory.DirCategory));
+
+    sysTableLookup.parmQuery(query);
+
+    sysTableLookup.performFormLookup();

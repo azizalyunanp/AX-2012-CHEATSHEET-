@@ -1,0 +1,29 @@
+public boolean validateTransdateLines(container _packedMap)
+{
+    Map             selectedWMSOrderTrans;
+    MapEnumerator   me;
+    WMSOrderTrans   orderTrans;
+
+    WMSOrderId      wmsOrderId;
+    RecVersion      recVersion;
+
+    boolean         ret = true;
+    TransDate       tglKosong = dateNull();
+
+    selectedWMSOrderTrans = Map::create(_packedMap);
+    me = selectedWMSOrderTrans.getEnumerator();
+
+    while (me.moveNext())
+    {
+        [wmsOrderId,recVersion] = me.currentValue();
+
+        select firstonly orderTrans
+                where orderTrans.OrderId   == wmsOrderId
+                &&    orderTrans.RecId     == me.currentKey();
+
+      //  if (orderTrans.TransDate == tglKosong)
+      //      throw warning(strFmt("Gatepass - Tanggal BBK must be filled in_"));
+    }
+
+    return ret;
+}

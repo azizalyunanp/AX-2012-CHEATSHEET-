@@ -1,0 +1,38 @@
+private void processPickedItem(AhkJSONObject jsonObject,InventTransId inventTransId,Qty qty , inventDim inventDim)
+{
+    QueryBuildDataSource QueryBuildDataSource;
+    tmpInventTransWMS    tmpInventTransWMS;
+    InventTrans          InventTrans,inventTransCheck;
+    InventTransOrigin    InventTransOrigin,inventTransOriginCheck;
+    Query                inventTransQuery;
+    InventTransWMS_Pick           inventTransWMS_Pick;
+ 
+
+    select firstOnly inventTransCheck
+        where inventTransCheck.StatusIssue == StatusIssue::Picked
+        exists join inventTransOriginCheck
+            where inventTransOriginCheck.RecId == inventTransCheck.InventTransOrigin
+                && inventTransOriginCheck.InventTransId == inventTransId
+                ;
+
+    if(!inventTransCheck)
+    {
+        //pick or unpick
+        inventTransQuery = new Query();
+        QueryBuildDataSource = inventTransQuery.addDataSource(tableNum(InventTrans));
+        InventTrans = InventTrans::findTransId(InventTransId);
+        InventTransOrigin = InventTransorigin::findByInventTransId(InventTransId);
+        QueryBuildDataSource.addRange(fieldNum(InventTrans,RecId)).value(int642str(InventTrans.recid));
+
+        delete_from tmpInventTransWMS;
+        tmpInventTransWMS.clear();
+        inventTransWMS_Pick = InventTransWMS_Pick::newStandard(tmpInventTransWMS,inventTransQuery);
+        tmpInventTransWMS.initFromInventTrans(InventTrans);
+        tmpInventTransWMS.initFromInventTransOrigin(InventTransOrigin);
+        tmpInventTransWMS.InventQty = qty;
+        tmpInventTransWMS.initFromInventDim(inventDim);
+        inventTransWMS_Pick.writeTmpInventTransWMS(tmpInventTransWMS);
+        inventTransWMS_Pick.updateInvent();
+    }
+ 
+}

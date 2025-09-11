@@ -1,0 +1,12 @@
+salesParmLineLocal  = SalesParmLine_ds.getFirst() as SalesParmLine;
+
+        while(salesParmLineLocal)
+        {
+            select firstOnly wmsOrderTrans where wmsOrderTrans.NoBukti == salesParmLineLocal.NoBukti
+                && wmsOrderTrans.inventTransRefId == salesParmLineLocal.OrigSalesId;
+            
+            select firstOnly MK_WSProcessExecute where MK_WSProcessExecute.KKOrKKM ==       
+            
+            salesParmLineLocal = SalesParmLine_ds.getNext() as SalesParmLine;
+        }
+    }

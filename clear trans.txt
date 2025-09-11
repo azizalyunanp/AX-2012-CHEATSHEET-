@@ -1,0 +1,13 @@
+static void AX_ClearTransaction(Args _args)
+{
+    SysDatabaseTransDelete delete;
+
+    if (box::yesNo(strFmt('Clear All Transaction AX %1',curext()), dialogButton::Yes, 'Confirmation') == dialogButton::Yes)
+    {
+        delete = new SysDatabaseTransDelete();
+        delete.run();
+
+        info("done");
+    }
+
+}

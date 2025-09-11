@@ -1,0 +1,16 @@
+PUBLIC CurrencyExchangeRate getExchRate(CurrencyCode fromCurrency = "USD" , CurrencyCode toCurrency = "IDR" , TransDate exchangeDate = today() )
+{
+    ExchangeRateHelper exchangeRateHelper;
+    RefRecId exchangeRateTypeRecId = ExchangeRateType::find(Ledger::findByLegalEntity(CompanyInfo::current()).DefaultExchangeRateType).RecId;
+    ;
+
+    exchangeRateHelper = ExchangeRateHelper::construct();
+    exchangeRateHelper.parmLedgerRecId(Ledger::current());
+    exchangeRateHelper.parmFromCurrency(fromCurrency);
+    exchangeRateHelper.parmToCurrency(toCurrency);
+    exchangeRateHelper.parmExchangeDate(exchangeDate);
+    exchangeRateHelper.parmExchangeRateTypeRecId(exchangeRateTypeRecId);
+
+    return ExchangeRateHelper::displayStoredExchangeRate_Static(exchangeRateHelper.getExchangeRate1(),
+           ExchangeRateCurrencyPair::getExchangeRateDisplayFactor(fromCurrency, toCurrency, exchangeRateTypeRecId, true))  ;
+}

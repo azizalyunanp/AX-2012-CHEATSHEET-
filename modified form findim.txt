@@ -1,0 +1,15 @@
+public void modified()
+{
+    DimensionAttribute          dimensionAttribute;
+    DimensionAttributeDirCategory       dimAttributeDirCategory;
+
+    super();
+
+    dimensionAttribute = DimensionAttribute::findByName("ExpenseType");
+
+    select firstonly DirCategory from dimAttributeDirCategory where dimAttributeDirCategory.DimensionAttribute == dimensionAttribute.RecId;
+
+    STX_MappingExpenseTypeSales.FinancialTagRecId = DimensionFinancialTag::findByFinancialTagCategoryAndValue(dimAttributeDirCategory.RecId,
+        STX_MappingExpenseTypeSales.FinancialTagName).RecId ;
+
+}

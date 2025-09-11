@@ -1,0 +1,13 @@
+display Name STX_AccountStructure()
+{
+    DimensionHierarchy hierarchy;
+    DimensionHierarchyLevel hierarchyLevel;
+    DimensionHierarchyId hId;
+    Name name ;
+    int i = 1; // Set to 0 if you also want to get the root MainAccount level
+
+    hId = DimensionHierarchy::getAccountStructure(MainAccount::findByMainAccountId(this.MainAccountId).RecId);
+    hierarchy = DimensionHierarchy::find(hId);
+
+    return hierarchy.Name ;
+}

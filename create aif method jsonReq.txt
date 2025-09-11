@@ -1,0 +1,85 @@
+[AifCollectionTypeAttribute('Parameters', Types::Class, classStr(STX_AifSWAGContract)), SysEntryPointAttribute(true)]
+str processSearchWO(STX_AifSWAGContract _contract)
+{
+    #define.RetryNum(1)
+    MK_CreateJson MK_CreateJson;
+    AhkJSONObject jsonObject;
+    AHKJsonArray jsonArray, jsonArrayLines;
+    str ret , jsonReq;
+    int i = 1;
+    int lines;
+    container conpackdata;
+    ProdTable prodTable;
+    SeqmentNum  nomor_wo;
+    InventSiteId site;
+    InventDim inventDim;
+    
+    try
+    {
+        ttsBegin;
+
+        jsonReq = _contract.ParmjsonReq();
+        jsonReq = strReplace(jsonReq, "\\", "");
+
+        // Parse JSON string
+        jsonObject = AhkJSONParser::parse(jsonReq);
+        jsonArray = jsonObject.getObjVal("data");
+
+        for (i = 1; i <= jsonArray.len(); i++)
+        {
+            nomor_wo = jsonArray.getArrayItem(i).getObjVal("nomor_wo") ? jsonArray.getArrayItem(i).getObjVal("nomor_wo").strVal() : "";
+            site = jsonArray.getArrayItem(i).getObjVal("site") ? jsonArray.getArrayItem(i).getObjVal("site").strVal() : "";
+            
+            while select prodTable
+                where prodTable.SeqmentNum like "*" + nomor_wo + "*"
+                join inventDim
+                    where inventDim.inventDimId == prodTable.InventDimId
+                        && inventDim.InventSiteId == site
+            {
+                MK_CreateJson =  MK_CreateJson::construct();
+                MK_CreateJson.StartWritejson();
+                MK_CreateJson.CreateData("prod_id" , prodTable.ProdId);
+                
+                MK_CreateJson.endWritejson();
+                ConPackData = conIns(ConPackData, lines, MK_CreateJson.resultData());
+            }
+                
+            
+            Ret =  @'{"data": ['+ con2Str(ConPackData) + '] , "totalRecords" : ' + strFmt("%1",i) + '  }';
+        }
+        
+        ttsCommit;
+        return Ret;
+    }
+    catch (Exception::UpdateConflict)
+    {
+        ttsAbort;
+        if (appl.ttsLevel() == 0)
+        {
+            if (xSession::currentRetryCount() >= #RetryNum)
+            {
+                throw Exception::UpdateConflictNotRecovered;
+            }
+            else
+            {
+                retry;
+            }
+        }
+        else
+        {
+            throw Exception::UpdateConflict;
+        }
+    }
+    catch (Exception::CLRError)
+    {
+        ttsAbort;
+        error(AifUtil::getClrErrorMessage());
+    }
+    catch
+    {
+        ttsAbort;
+        error(AifUtil::getClrErrorMessage());
+    }
+        
+        
+}

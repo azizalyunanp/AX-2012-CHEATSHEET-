@@ -1,0 +1,39 @@
+static void ConvertJsonToString(Args _args)
+{
+    str jsonInput = '{"data":[{"CaseId":"STXN-000078","Requester":"Nur Handayani","Lines":[{"ItemId":"520072E71041"},{"ItemId":"520072E71043"}]}]}';
+
+    Map dataMap;
+    MapEnumerator mapEnumerator;
+    container con;
+    int i , lines;
+    AhkJSONObject  jsonObject;
+    AHKJsonArray jsonArray , jsonArrayLines;
+    ItemId ItemId;
+    str dlvModeId, description;
+    str result = '' , linesstr = '';
+
+    // Parse JSON string
+    jsonObject = AhkJSONParser::parse(jsonInput);
+    jsonArray = jsonObject.getObjVal("data");
+
+    // Iterate over the JSON array
+    for (i = 1; i <= jsonArray.len(); i++)
+    {
+
+        dlvModeId = jsonArray.getArrayItem(i).getObjVal("CaseId").strVal();
+        description = jsonArray.getArrayItem(i).getObjVal("Requester").strVal();
+
+        // Concatenate to result string
+        result += strFmt('%1,%2', dlvModeId, description);
+        
+        jsonArrayLines  = jsonArray.getArrayItem(i).getObjVal("Lines");
+        for (lines = 1; lines <= jsonArrayLines.len(); lines++)
+        {
+            ItemId = jsonArrayLines.getArrayItem(lines).getObjVal("ItemId").strVal();
+            linesstr  += strFmt('%1,', ItemId);
+        }
+    }
+
+    // Display or return the result
+    info(linesstr);
+}

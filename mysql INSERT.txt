@@ -1,0 +1,38 @@
+// X++, Main method in a class.
+static public void Main(Args _args)
+{
+    LoginProperty loginProperty;
+    OdbcConnection odbcConnection;
+    Statement statement;
+    str sql, criteria;
+    SqlStatementExecutePermission perm;
+    ;
+
+    // Set the information on the ODBC.
+    loginProperty = new LoginProperty();
+    loginProperty.setDSN("ExternalDB_32bit");
+    loginProperty.setDatabase("ExternalDatabaseName");
+
+    //Create a connection to external database.
+    odbcConnection = new OdbcConnection(loginProperty);
+
+    if (odbcConnection)
+    {
+        sql = "INSERT INTO items VALUES ('7000', 'Item 7000');";
+
+        //Assert permission for executing the sql string.
+        perm = new SqlStatementExecutePermission(sql);
+        perm.assert();
+
+        //Prepare the sql statement.
+        statement = odbcConnection.createStatement();
+        statement.executeUpdate(sql);
+
+        //Close the connection.
+        statement.close();
+    }
+    else
+    {
+        error("Failed to log on to the database through ODBC.");
+    }
+}

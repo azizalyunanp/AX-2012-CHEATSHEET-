@@ -1,0 +1,13 @@
+void clicked()
+{
+    CustPaymModeTable custPaymModeTablelocal;
+    MultiSelectionHelper helper = MultiSelectionHelper::construct();
+    helper.parmDatasource(custPaymModeTable_ds);
+    custPaymModeTablelocal = helper.getFirst();
+   
+    while (custPaymModeTablelocal.RecId != 0)
+    {
+        info(custPaymModeTablelocal.PaymMode);
+        custPaymModeTablelocal = helper.getNext();
+    }
+}

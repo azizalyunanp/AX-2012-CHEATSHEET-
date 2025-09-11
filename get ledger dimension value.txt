@@ -1,0 +1,52 @@
+static void getDimensionValuesUsingView(Args _args)
+{
+
+ LedgerJournalTrans ledgerJournalTrans; //Table that stores ledger journal transaction
+ DimensionAttributeLevelValueAllView dimAttrView; //View that will display all values for ledger dimensions
+ DimensionAttribute dimAttr; //Main dimension attribute table
+ int i;
+
+ while select ledgerJournalTrans where ledgerJournalTrans.JournalNum == "00432"
+ {
+ i++;
+ info(strFmt("%1. %2", i, DimensionAttributeValueCombination::find(ledgerJournalTrans.LedgerDimension).DisplayValue));
+ 
+ while select DisplayValue from dimAttrView 
+ where dimAttrView.ValueCombinationRecId == ledgerJournalTrans.LedgerDimension
+ join BackingEntityType from dimAttr
+ where dimAttr.RecId == dimAttrView.DimensionAttribute
+ {
+ switch (dimAttr.BackingEntityType)
+ {
+ //For existing value
+ case tableNum(DimAttributeMainAccount):
+ info(strFmt("Main Account : %1", dimAttrView.DisplayValue));
+ break;
+
+ case tableNum(DimAttributeOMBusinessUnit):
+ info(strFmt("Business Unit : %1", dimAttrView.DisplayValue));
+ break;
+
+ case tableNum(DimAttributeCustTable):
+ info(strFmt("Customer : %1", dimAttrView.DisplayValue));
+ break;
+
+ case tableNum(DimAttributeOMDepartment):
+ info(strFmt("Department : %1", dimAttrView.DisplayValue));
+ break;
+
+ case tableNum(DimAttributeHcmWorker):
+ info(strFmt("Worker : %1", dimAttrView.DisplayValue));
+ break;
+ //end
+ 
+ //For Custom Financial dimension
+ case tableNum(DimensionFinancialTag):
+ info(strFmt("%1 : %2", dimAttr.Name, dimAttrView.DisplayValue));
+ break;
+ //end
+
+ } 
+ }
+ }
+}

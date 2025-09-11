@@ -1,0 +1,35 @@
+static void Job_InventSumDateDim(Args _args)
+
+{
+
+ItemId itemId;
+InventDim inventDimCriteria;
+InventDimParm inventDimParm;
+InventSumDatePhysicalDim inventSumDateDim;
+InventQty OnhandQty;
+;
+
+// Specify the item to get onhand info on
+
+itemId = 'A0001';
+inventDimCriteria.clear();
+inventDimCriteria.InventSiteId = '1';
+inventDimCriteria.InventLocationId = '11';
+inventDimCriteria.WMSLocationId = '11';
+inventDimParm.initFromInventDim(inventDimCriteria);
+inventSumDateDim =InventSumDatePhysicalDim::newParameters(
+mkdate(29,3,2017),itemId,
+inventDimCriteria,inventDimParm);
+
+info(strfmt('PostedQty: %1',inventSumDateDim.postedQty()));
+info(strfmt('DeductedQty: %1',inventSumDateDim.deductedQty()));
+info(strfmt('ReceivedQty: %1',inventSumDateDim.receivedQty()));
+info(strfmt('registeredQty: %1',inventSumDateDim.registeredQty()));
+info(strfmt('pickedQty: %1',inventSumDateDim.pickedQty()));
+
+OnhandQty = InventSumDatePhysicalDim::onHandQty(
+mkdate(29,3,2017),itemId,
+inventDimCriteria,inventDimParm);
+info(strfmt('onHandQty: %1',OnhandQty));
+
+}

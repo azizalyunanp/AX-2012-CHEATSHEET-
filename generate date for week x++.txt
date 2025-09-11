@@ -1,0 +1,19 @@
+public static void Week2Date(int yr = year(today()), int week = 1)
+{
+
+    Date    testDate  = dateStartYr(mkDate(01, 01, year(today() )));
+    date    startDate = dateStartYr(mkDate(01, 01, year(today()  )));
+    Int     weekdays , i ;
+    int     wktmp = (week>1)? (week -1)*7 : 7;
+
+    
+ 
+   for (i = 1;i <= 7; i++)
+   {
+        wktmp++;
+        testdate = datetimeutil::date( datetimeutil::addDays(datetimeutil::newDateTime(startDate,0) ,  wktmp));
+        info(strFmt("addDAte %1",wktmp));
+        info(strFmt("date %1",testDate));
+   }
+ 
+}

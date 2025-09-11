@@ -1,0 +1,62 @@
+void clicked()
+{
+    MultiSelectionHelper          selectionHelper1 = MultiSelectionHelper::construct();//Create instance of class
+    MultiSelectionHelper          selectionHelper2 = MultiSelectionHelper::construct();//Create instance of class
+    Set                           selectedRecords1 = new Set(Types::Record);//Declare a set of type record
+    Set                           selectedRecords2 = new Set(Types::Record);//Declare a set of type record
+    InventSum                     tableLines1; //Your table buffer
+    InventDim                     tableLines2, InventDimSource, InventDimTarget; //Your table buffer
+
+    inventJournalTrans            inventJournalTrans;
+
+
+    super();
+
+    selectionHelper1.parmDatasource(InventSum_DS); //Set the datasource
+    tableLines1  = InventSum_DS.getFirst(1); //assign to table buffer the reference to selected record(s)
+    tableLines2  = InventDim_ds.getFirst(1); //assign to table buffer the reference to selected record(s)
+
+    if (tableLines1.ItemId && IJTable.RecId)
+    {
+        while (tableLines1)
+        {
+            //selectedRecords1.add(tableLines1);
+            InventDimSource = InventDim::findOrCreate(tableLines2);
+            inventJournalTrans.clear();
+            inventJournalTrans.initFromInventJournalTable(IJTable);
+            inventJournalTrans.ItemId = tableLines1.ItemId;
+            inventJournalTrans.initFromInventTable(InventTable::find(tableLines1.ItemId));
+
+            InventDimTarget.clear();
+            InventDimTarget.InventSiteId        = IJTable.MK_InventSiteIdTo;
+            InventDimTarget.inventLocationId    = IJTable.MK_InventLocationIdTo;
+
+            // add by julz
+            if(IJTable.MK_inventBatchIdTo)
+                InventBatch::findOrCreate(IJTable.MK_inventBatchIdTo , inventJournalTrans.ItemId);
+
+            if(IJTable.MK_inventSerialIdTo)
+                inventserial::findOrCreate(IJTable.MK_inventBatchIdTo , inventJournalTrans.ItemId);
+
+            InventDimTarget.wMSLocationId       = IJTable.MK_wMSLocationIdTo;
+            InventDimTarget.inventBatchId       = IJTable.MK_inventBatchIdTo;
+            InventDimTarget.inventSerialId      = IJTable.MK_inventSerialIdTo;
+            InventDimTarget.InventStatusId      = IJTable.MK_InventStatusIdTo;
+            InventDimTarget = InventDim::findOrCreate(InventDimTarget);
+
+            inventJournalTrans.InventDimId = InventDimSource.inventDimId;
+            inventJournalTrans.ToInventDimId = InventDimTarget.inventDimId;
+
+            inventJournalTrans.Qty = -1 * tableLines1.availOrderedCalculated();
+            inventJournalTrans.TransDate = SystemDateget();
+            inventJournalTrans.insert();
+
+            tableLines1 = InventSum_DS.getNext();
+            tableLines2 = InventDim_ds.getNext();
+        }
+
+        element.close();
+
+    }
+
+}

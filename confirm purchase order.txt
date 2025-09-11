@@ -1,0 +1,67 @@
+public void confirmPurchaseOrder()
+{
+    PurchFormLetter             purchFormLetter;
+    PurchFormletterParmData     purchFormLetterParmData;
+    PurchParmUpdate             purchParmUpdate;
+    PurchParmTable              purchParmTable;
+    PurchParmLine               purchParmLine;
+    PurchTable                  purchTable;
+    PurchLine                   purchLine;
+    PurchId                     purchId;
+
+    purchId         = STX_DMOutPurchParmTable.PurchId ;
+    purchTable      = PurchTable::find(purchId);
+
+    try
+
+    {
+        ttsBegin;
+
+        // Create PurchParamUpdate table
+        purchFormLetterParmData = PurchFormletterParmData::newData(
+            DocumentStatus::PurchaseOrder,
+            VersioningUpdateType::Initial);
+
+        purchFormLetterParmData.parmOnlyCreateParmUpdate(true);
+        purchFormLetterParmData.createData(false);
+        purchParmUpdate = purchFormLetterParmData.parmParmUpdate();
+
+        // Set PurchParmTable table
+        purchParmTable.clear();
+        purchParmTable.TransDate                = STX_DMOutPurchParmTable.InvoiceDate ;
+        purchParmTable.DocumentDate             = STX_DMOutPurchParmTable.InvoiceDate ;
+        purchParmTable.Ordering                 = DocumentStatus::PurchaseOrder;
+        purchParmTable.ParmJobStatus            = ParmJobStatus::Waiting;
+        purchParmTable.PurchId                  = purchTable.PurchId;
+        purchParmTable.PurchName                = purchTable.PurchName;
+        purchParmTable.DeliveryName             = purchTable.DeliveryName;
+        purchParmTable.DeliveryPostalAddress    = purchTable.DeliveryPostalAddress;
+        purchParmTable.OrderAccount             = purchTable.OrderAccount;
+        purchParmTable.CurrencyCode             = purchTable.CurrencyCode;
+        purchParmTable.InvoiceAccount           = purchTable.InvoiceAccount;
+        purchParmTable.ParmId                   = purchParmUpdate.ParmId;
+        purchParmTable.insert();
+
+        purchFormLetter = PurchFormLetter::construct(DocumentStatus::PurchaseOrder);
+        purchFormLetter.transDate(STX_DMOutPurchParmTable.InvoiceDate );
+        purchFormLetter.proforma(false);
+        purchFormLetter.specQty(PurchUpdate::All);
+        purchFormLetter.purchTable(purchTable);
+
+        // This is the ID we hard code as the product receipt ID, if we do the posting via UI
+        // user would have the option to manually enter this value
+        purchFormLetter.parmParmTableNum(purchParmTable.ParmId);
+        purchFormLetter.parmId(purchParmTable.ParmId);
+        purchFormLetter.purchParmUpdate(purchFormLetterParmData.parmParmUpdate());
+        purchFormLetter.run();
+
+        ttsCommit;
+    }
+    catch
+
+    {
+        ttsAbort ;
+    }
+
+
+}

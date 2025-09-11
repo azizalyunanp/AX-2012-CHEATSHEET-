@@ -1,0 +1,15 @@
+public client static void ModulLookup(FormStringControl _ctrl, STX_ReqFormWModulAX STX_ReqFormWModulAX)
+{
+    SysTableLookup sysTableLookup;
+    Query query = new Query();
+    QueryBuildDataSource qbds;
+    QueryBuildRange Qbr;
+
+    sysTableLookup = SysTableLookup::newParameters(tablenum(STX_ReqFormModul), _ctrl);
+    sysTableLookup.addLookupfield(fieldnum(STX_ReqFormModul, STX_ModulAX), true);
+
+    qbds = query.addDataSource(tablenum(STX_ReqFormModul));
+    qbds.addRange(fieldNum(STX_ReqFormModul,STX_ModulAX)).value(SysQuery::value(STX_ReqFormWModulAX));
+    sysTableLookup.parmQuery(query);
+    sysTableLookup.performFormLookup();
+}

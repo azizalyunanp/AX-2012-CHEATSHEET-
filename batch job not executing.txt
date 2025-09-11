@@ -1,0 +1,29 @@
+delete from sysserverconfig
+ 
+delete from SYSCLUSTERCONFIG 
+ 
+delete from SYSCLIENTSESSIONS 
+ 
+delete from SYSSERVERSESSIONS
+ 
+delete from BATCHSERVERCONFIG
+ 
+delete from BATCHGROUP 
+ 
+delete from BATCHGLOBAL
+ 
+delete from BATCHJOB
+ 
+delete from BATCHSERVERGROUP
+ 
+delete from BATCHJOBHISTORY
+ 
+delete from BATCHCONSTRAINTS
+ 
+delete from BATCHCONSTRAINTSHISTORY
+
+delete from BATCHHISTORY
+ 
+delete from BATCHJOBHISTORY
+ 
+delete from BATCH

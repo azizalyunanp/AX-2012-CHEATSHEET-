@@ -1,0 +1,61 @@
+static void ReadFromURL_example(Args _args) {
+  System.Net.WebResponse webResponse;
+  System.Net.HttpWebRequest httpWebRequest;
+  System.Net.WebHeaderCollection webHeaderCollection;
+  System.IO.StreamReader streamReader;
+  System.IO.Stream stream;
+  str xmlOut;
+  XmlDocument xmlDocument;
+  XmlNodeList xmlNodeList;
+  XmlNode mainNode;
+  XmlNode childNode;
+  #define.ServiceTimeout(5000)
+
+  #define.ServiceURL('http://svc.efaktur.pajak.go.id/validasi/faktur/724404439072000/0082323271245/3031300D06096086480165030402010500042045C4A90B56711278002E720418AD65D95178CDD9F296D68024D8729E1FEEE090')
+
+  #define.mainNodeName('resValidateFakturPm')
+  /*#define.childNodeName('food')
+
+  #define.nameNode('name')
+
+  #define.priceNode('price')
+
+  #define.descriptionNode('description')
+
+  #define.caloriesNode('calories')*/
+
+  #define.HttpWebRequestMethod("GET")
+  #define.HttpHeaderAuthorization("Authorization")
+
+  httpWebRequest = System.Net.WebRequest::CreateHttp(#ServiceURL);
+  httpWebRequest.set_Timeout(#ServiceTimeout);
+  webHeaderCollection = httpWebRequest.get_Headers();
+  webResponse = httpWebRequest.GetResponse();
+  stream = webResponse.GetResponseStream();
+  streamReader = new System.IO.StreamReader(stream);
+  xmlOut = streamReader.ReadToEnd();
+
+  // --------------------- READ FROM XML-----------------
+
+  xmlDocument = XmlDocument::newXml(XMLOut);
+  mainNode = xmlDocument.selectSingleNode(#mainNodeName);
+  info(mainNode.selectSingleNode('nomorFaktur').text());
+
+  /*xmlNodeList             = mainNode.selectNodes(#childNodeName);
+
+  childNode               = xmlNodeList.nextNode();
+
+  while (childNode)
+
+  {
+
+      info ( childNode.selectSingleNode(#nameNode).text() +  "; Price:  " + childNode.selectSingleNode(#priceNode).text() +  ";  " +
+
+             childNode.selectSingleNode(#descriptionNode).text() +  "; Calories: " + childNode.selectSingleNode(#caloriesNode).text());
+
+      childNode    = xmlNodeList.nextNode();
+
+  }*/
+
+  // --------------------- READ FROM XML----------------- 
+}

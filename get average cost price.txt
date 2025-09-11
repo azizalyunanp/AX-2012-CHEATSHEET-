@@ -1,0 +1,19 @@
+[SysClientCacheDataMethodAttribute(true)]
+
+display CostPriceAverage averageCostPriceUnit(STX_InqGetCostPriceItem inqGetCostPriceItem )
+ {
+    CostPriceAverage costprice;
+    InventDim       inventDimCriteria;
+    ItemId          itemId;
+
+   InventDimParm inventDimParm;
+   date          perDate =systemDateGet();
+   InventOnHand  inventOnHand;
+   ;
+   itemId         = inqGetCostPriceItem.ItemId  ;
+   inventDimCriteria.InventLocationId = inqGetCostPriceItem.InventLocationId ;
+   inventDimParm.initFromInventDim(inventDimCriteria);
+   inventOnHand  = InventOnhand::newParameters(itemId, inventDimCriteria, inventDimParm);
+   costprice= inventOnHand.costPricePcs(false, perDate);
+   return costprice;
+ }

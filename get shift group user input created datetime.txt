@@ -1,0 +1,33 @@
+static void Job94(Args _args)
+{
+    STX_ProdQrShift ProdQrShift , ProdQrShift2;
+    fromTime startTime , endTime;
+    boolean foundShift = false;
+    Shift shift; 
+    CreatedDateTime utcNow = DateTimeUtil::getSystemDateTime();
+    CreatedDateTime bangkokNow = DateTimeUtil::applyTimeZoneOffset(utcNow,  DateTimeUtil::getCompanyTimeZone());
+    
+    while select ProdQrShift order by ProdQrShift.fromTime asc
+    {
+        startTime = ProdQrShift.fromTime;
+
+        select firstonly ProdQrShift2  where ProdQrShift2.RecId == ProdQrShift.RecId  ;
+        
+        endTime = ProdQrShift2.ToTime;
+        
+        info(strFmt("Shift %1 Start Time %2 , End Time %3",ProdQrShift.Shift,time2StrHM(startTime) ,time2StrHM(endTime)) ); 
+
+    
+        if (DateTimeUtil::time(bangkokNow) >= startTime && DateTimeUtil::time(bangkokNow) <= endTime )
+        {
+            shift = ProdQrShift.Shift;
+            foundShift = true;
+            break;
+        }
+      
+    }
+    
+    info(enum2str(shift));
+    info(strFmt("%1",time2StrHMS(DateTimeUtil::time(bangkokNow))));
+    
+}

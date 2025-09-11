@@ -1,0 +1,14 @@
+display amount SumSalesPrice()
+{
+//vn_uploadSalesLine m_SalesLine;
+Amount      m_Amount;
+    MK_LppJournalForVendPaymentTmp MK_LppJournalForVendPaymentTmp1;
+;
+for (MK_LppJournalForVendPaymentTmp1 = LppJournalForVendPaymentTmp_ds.getFirst(true)?LppJournalForVendPaymentTmp_ds.getFirst(true):LppJournalForVendPaymentTmp_ds.cursor();
+       MK_LppJournalForVendPaymentTmp1; MK_LppJournalForVendPaymentTmp1 = LppJournalForVendPaymentTmp_ds.getNext())
+
+{
+    m_Amount += MK_LppJournalForVendPaymentTmp1.Amount2Settle;
+}
+   return m_amount;
+}

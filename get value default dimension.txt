@@ -1,0 +1,21 @@
+public static Name STX_GetDepartmentDefaultDimension(RefRecId DefaultDimension)
+{
+    DimensionAttributeValueSetStorage    dimStorage;
+    ProjTable                                            ProjTable;
+    Counter                                               i;
+    Name        Department ; 
+   
+    dimStorage = DimensionAttributeValueSetStorage::find(DefaultDimension);
+
+    for (i=1 ; i<= dimStorage.elements() ; i++)
+    {
+        
+        if(DimensionAttribute::find(dimStorage.getAttributeByIndex(i)).Name == "Department")
+        {
+            Department = dimStorage.getDisplayValueByIndex(i);
+        }
+        //info(DimensionAttribute::find(dimStorage.getAttributeByIndex(i)).Name +"----" +dimStorage.getDisplayValueByIndex(i));
+    }
+    
+    return Department; 
+}

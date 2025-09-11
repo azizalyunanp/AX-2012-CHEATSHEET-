@@ -1,0 +1,5 @@
+SysInfoAction_MenuFunction sysInfoAction    = SysInfoAction_MenuFunction::newMenuItem(menuitemDisplayStr(InventJournalTableTransfer),MenuItemType::Display);
+
+sysInfoAction.parmDescription(strFmt("Show %1", inventJournalTable.JournalId));
+sysInfoAction.parmCallerBuffer(inventJournalTable);
+info("Journal created " + inventJournalTable.JournalId, '', sysInfoAction);

@@ -1,0 +1,22 @@
+static void Job45(Args _args)
+{
+    ProdRoute                       prodRoute;
+    RecId                           recId;
+    WrkCtrId                        wrkCtrGrpId;
+    ProdId                          prodId = "W000170";
+    WrkCtrActivityRequirementType   relationShipType;
+    WrkCtrActivityRequirement       wrkCtrActivityRequirement;
+
+    while select prodRoute
+        where prodRoute.ProdId == prodId
+    {
+        recId = prodRoute.activityRequirementSet().RecId;
+
+        select WrkCtrActivityRequirement
+            where WrkCtrActivityRequirement.ActivityRequirementSet == recid;
+        wrkCtrGrpId =  WrkCtrActivityRequirement.requirementEdit();
+        relationShipType = WrkCtrActivityRequirement.RelationshipType;
+       
+        info(strFmt("%1, %2",relationShipType,wrkCtrGrpId));
+    }
+}

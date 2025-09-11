@@ -1,0 +1,28 @@
+static void DEV_InventTransRegistrationFromCode(Args _args)
+{
+    InventTransWMS_Register inventTransWMS_register;
+    InventTrans             inventTrans = InventTrans::findTransId( “<inventTransId>”);
+    InventSerialId          id1 = “<serialId1>”, id2 = “<serialId2>” ;
+    TmpInventTransWMS       tmpInventTransWMS;
+    InventDim               inventDim = inventTrans.inventDim();
+    inventTransWMS_register = inventTransWMS_register::newStandard(tmpInventTransWMS);
+    tmpInventTransWMS.clear();
+    tmpInventTransWMS.initFromInventTrans(inventTrans);
+    tmpInventTransWMS.InventQty = 1;
+    inventDim.inventSerialId = id1;
+    tmpInventTransWMS.InventDimId = inventDim::findOrCreate(inventDim).inventDimId;
+    tmpInventTransWMS.insert();
+    inventTransWMS_register.writeTmpInventTransWMS(tmpInventTransWMS,
+inventTrans,
+inventTrans.inventDim());
+    tmpInventTransWMS.clear();
+    tmpInventTransWMS.initFromInventTrans(inventTrans);
+    tmpInventTransWMS.InventQty = 1;
+    inventDim.inventSerialId = id2;
+    tmpInventTransWMS.InventDimId = inventDim::findOrCreate(inventDim).inventDimId;
+    tmpInventTransWMS.insert();
+    inventTransWMS_register.writeTmpInventTransWMS(tmpInventTransWMS,
+inventTrans,
+inventTrans.inventDim());
+    inventTransWMS_register.updateInvent(inventTrans);
+}

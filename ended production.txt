@@ -1,0 +1,13 @@
+static void prodEnd(Args _args)
+{
+    ProdTable prodTable;
+    ProdMultiHistoricalCost prodMultiHistoricalCost;
+
+    prodTable = ProdTable::find("P000195");
+
+    prodMultiHistoricalCost = ProdMultiHistoricalCost::construct(new Args());
+    RunBaseMultiParm::initParm(prodMultiHistoricalCost);
+    prodMultiHistoricalCost.insert(prodTable, prodMultiHistoricalCost.defaultParmBuffer());
+
+    prodMultiHistoricalCost.run();
+}

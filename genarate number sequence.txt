@@ -1,0 +1,9 @@
+static void GENARETE_numberSEQ(Args _args)
+{
+    NumberSeq  numberSeq;
+    STX_MonitoringSubkon num;
+    ;
+    numberSeq = NumberSeq::newGetNum(InventParameters::numRefMonitoringSubkon());
+    num = numberSeq.num();
+    info(num);
+}
