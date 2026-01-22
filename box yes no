@@ -1,0 +1,4 @@
+if (box::yesNo('The data on temp table will be process, are you sure ?', dialogButton::Yes, 'Confirmation') == dialogButton::Yes)
+{
+    HRSPopulateTimeAttendance.run();
+}"
